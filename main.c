@@ -11,7 +11,7 @@ typedef struct Node{
 
     struct Node * left;
     struct Node * right;
-    char * name;
+    char * name[MAX_LEN];
     int fine;
 
 }Node;
@@ -29,18 +29,21 @@ Node * createNode(char * name, int value){
         abort();
     }
     // assign new values
-    newNode->name[MAX_LEN] = name;
+    strcpy(newNode->name,name);
     newNode->fine = value;
     newNode->left = NULL;
     newNode->right = NULL;
+    return newNode;
 }
 
 // insert Node, if already exist add to fine
-Node * addFine(Node * root,char * name,int value){
+Node * addFine(Node * root,char * name,int value, int * depth){
     // Base case
-    if( root == NULL);
+    if( root == NULL){
         printf("Tree is empty.\n");
-        return;
+        Node * newRoot = createNode(name, value);
+        return newRoot;
+    }
 
     int ranking = strcmp(name,root->name); 
 
@@ -59,7 +62,7 @@ Node * addFine(Node * root,char * name,int value){
     if(ranking < 0)
         if(root->left == NULL){ // check if its empty first
             Node * newNode = createNode(name, value);
-            root->right = newNode;
+            root->left = newNode;
             return newNode;
         }
         else{ //traverse towards the right
@@ -75,11 +78,45 @@ Node * addFine(Node * root,char * name,int value){
 
 
 int main(){
+    Node * mainRoot = NULL;
     // amount to process
+    // test code
+
+
+
+
+
+
+
+
+
+
+    //
     int qeuries;
     scanf("%d",&qeuries);
-
     for (int i = 0; i < qeuries; i++){
+        char command[MAX_LEN];
+        char name[MAX_LEN];
+        scanf("%s",command);
+            if(strcmp(command, "add") == 0){
+                int fine;
+                scanf("%s %d",name, &fine);
+                // function call
+            } else if(strcmp(command, "deduct") == 0){
+                int fine;
+                scanf("%s %d",name,&fine);
+                //function call
+                
+            } else if(strcmp(command, "search") == 0){
+                
+            } else if(strcmp(command, "average") == 0){
+                
+            } else if(strcmp(command, "height_balance") == 0){
+                
+            } else {
+                
+                
+            }
         
     }
 
