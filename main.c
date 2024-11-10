@@ -11,14 +11,10 @@ typedef struct Node{
 
     struct Node * left;
     struct Node * right;
-    char * name[MAX_LEN];
+    char name[MAX_LEN];
     int fine;
 
 }Node;
-
-Node * search(Node * root, char * name){
-
-}
 
 // create a new Node
 Node * createNode(char * name, int value){
@@ -50,39 +46,77 @@ Node * addFine(Node * root,char * name,int value, int * depth){
     // go right if greater
     if(ranking > 0)
         if(root->right == NULL){ // check if its empty first
-            Node * newNode = createNode(name, value);
-            root->right = newNode;
-            return newNode;
+            root->right = createNode(name, value);
         }
         else{ //traverse towards the right
-            return add(root->right, name, value);
+            root->right = addFine(root->right, name, value, depth);
         }
     
     // go left is less than
     if(ranking < 0)
         if(root->left == NULL){ // check if its empty first
-            Node * newNode = createNode(name, value);
-            root->left = newNode;
-            return newNode;
+            root->left = createNode(name, value);
         }
         else{ //traverse towards the right
-            return add(root->left, name, value);
+            root->left = addFine(root->left, name, value,depth);
         }
     // increase fine if equal
     if(ranking == 0){
         root->fine += value;
-        return root;
     }
+
+    return root;
         
+}
+
+Node * search(Node * root, char * name){
+    if( root == NULL)
+        return NULL;
+
+    int ranking = strcmp(name,root->name);
+
+    // go right if greater 
+    if(ranking > 0)
+        return search(root->right, name);
+    // go left is less than
+    if(ranking < 0)
+        return search(root->left, name);
+    // return node if found
+    if(ranking == 0)
+        return root;
+    
+    // if not found
+    printf("Not found.\n");
+    return NULL;
+
+}
+
+
+
+void printInOrder(Node * root){
+    if( root == NULL)
+        return;
+    printInOrder(root->left);
+    printf("%s:%d, ",root->name,root->fine);
+    printInOrder(root->right);
 }
 
 
 int main(){
+    // init empty tree
     Node * mainRoot = NULL;
-    // amount to process
+    int depth = 0;
     // test code
-
-
+    mainRoot = addFine(mainRoot, "jay", 500,&depth);
+    mainRoot = addFine(mainRoot, "amy", 300,&depth);
+    mainRoot = addFine(mainRoot, "zoe", 200,&depth);
+    mainRoot = addFine(mainRoot, "mike", 150,&depth);
+    mainRoot = addFine(mainRoot, "sara", 250,&depth);
+    mainRoot = addFine(mainRoot, "tom", 100,&depth);
+    mainRoot = addFine(mainRoot, "bob", 400,&depth);
+    mainRoot = addFine(mainRoot, "bob", 400,&depth);
+    
+    printInOrder(mainRoot);
 
 
 
@@ -92,8 +126,10 @@ int main(){
 
 
     //
+    // amount to process
     int qeuries;
     scanf("%d",&qeuries);
+
     for (int i = 0; i < qeuries; i++){
         char command[MAX_LEN];
         char name[MAX_LEN];
@@ -108,12 +144,17 @@ int main(){
                 //function call
                 
             } else if(strcmp(command, "search") == 0){
+                scanf("%s", name);
+                //function call
                 
             } else if(strcmp(command, "average") == 0){
+                //function call
                 
             } else if(strcmp(command, "height_balance") == 0){
+                //function call
                 
             } else {
+                scanf("%s", name);
                 
                 
             }
