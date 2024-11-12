@@ -74,12 +74,41 @@ Node * addFine(Node * root,char * name,int value){
         
 }
 
-// deduct from fine or delete
-Node * deduct(Node * root, char * name, int deductFine){
+// find parent
+Node * findParent(Node * root, Node * target){
+    // if tree empty or no parent aka root
+    if( root == NULL || root == target)
+        return NULL;
+    
+    // if found
+    if( root->right == target || root->left == target)
+        return root;
+    
+    // look right if target is greater
+    if(strcmp(target->name,root->name) > 0){
+        return findParent(root->right,target);
+
+    } else{ //look left if target is less
+        return findParent(root->left, target);
+    }
 
 }
 
-Node * delete(Node){
+// no child
+int isLeaf(Node * curr){
+    if(curr->right == NULL && curr->left == NULL)
+        return 1;
+    return 0;
+}
+//find max only in a subtree
+Node * findMax(Node * root){
+    if(root->right != NULL)
+        return findMax(root->right);
+    return root->right;
+}
+
+Node * delete(Node * root,Node * curr){
+    Node * temp;
     
 }
 
@@ -194,7 +223,7 @@ int main(){
         char command[MAX_LEN];
         char name[MAX_LEN];
         depth = 0;
-        Node * updatedNode = NULL;
+        Node * targetNode = NULL;
         scanf("%s",command);
             if(strcmp(command, "add") == 0){
 
@@ -202,24 +231,39 @@ int main(){
                 scanf("%s %d",name, &fine);
                 mainRoot = addFine(mainRoot,name,fine);
                 // searches for the updated node
-                updatedNode = search(mainRoot,name,&depth);
+                targetNode = search(mainRoot,name,&depth);
 
-                printf("%s %d %d\n",name,updatedNode->fine,depth);
+                printf("%s %d %d\n",name,targetNode->fine,depth);
 
             } else if(strcmp(command, "deduct") == 0){
 
                 int deduct;
                 scanf("%s %d",name,&deduct);
-                //function call
+                targetNode = search(mainRoot,name, &depth);
+                // if not found
+                if(targetNode == NULL)
+                    printf("%s not found\n",name);
+
+                //deduct from fine
+                else if(targetNode->fine - deduct > 0){
+                    targetNode->fine -= deduct;
+                    printf("%s %d %d\n", name, targetNode->fine, depth);
+
+                }
+                else{ //delete node since its negative
+                    mainRoot = delete(mainRoot,targetNode);
+                    printf("%s removed\n", name);
+                }
+                
                 
             } else if(strcmp(command, "search") == 0){
 
                 scanf("%s", name);
-                updatedNode = search(mainRoot,name,&depth);
-                if(updatedNode == NULL)
+                targetNode = search(mainRoot,name,&depth);
+                if(targetNode == NULL)
                     printf("%s not found\n",name);
                 else{
-                    printf("%s %d %d\n",name,updatedNode->fine,depth);
+                    printf("%s %d %d\n",name,targetNode->fine,depth);
                 }
                 
             } else if(strcmp(command, "average") == 0){
