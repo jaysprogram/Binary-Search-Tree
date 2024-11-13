@@ -21,7 +21,7 @@ Node * createNode(char * name, int value){
 
     Node * newNode = malloc(sizeof(Node));
     if(newNode == NULL){
-        printf("Node allocation fail in create Node.");
+        //printf("Node allocation fail in create Node.");
         abort();
     }
     // assign new values
@@ -36,7 +36,7 @@ Node * createNode(char * name, int value){
 Node * addFine(Node * root,char * name,int value){
     // Base case
     if( root == NULL){
-        printf("Tree is empty.\n");
+        //printf("Tree is empty.\n");
         Node * newRoot = createNode(name, value);
         return newRoot;
     }
@@ -91,7 +91,6 @@ Node * findParent(Node * root, Node * target){
     } else{ //look left if target is less
         return findParent(root->left, target);
     }
-
 }
 
 // no child
@@ -104,13 +103,99 @@ int isLeaf(Node * curr){
 Node * findMax(Node * root){
     if(root->right != NULL)
         return findMax(root->right);
-    return root->right;
+    return root;
+}
+
+//if has a left child
+int hasLeftChild(Node * target){
+    if(target->right == NULL && target->left != NULL)
+        return 1;
+    return 0;
+}
+
+int hasRightChild(Node * target){
+    if(target->left == NULL && target->right != NULL)
+        return 1;
+    return 0;
 }
 
 Node * delete(Node * root,Node * curr){
     Node * temp;
+    Node * parent = findParent(root,curr);
+
+    // if leave node
+    if(isLeaf(curr)){
+        // case where is only one node
+        if(parent == NULL){
+            free(root);
+            return NULL; 
+            // if child is on the left
+        } else if(strcmp(curr->name,parent->name) < 0){
+            free(curr);
+            parent->left = NULL;
+            //if on the right
+        } else{
+            free(curr);
+            parent->right = NULL;
+        }
+        return root;
+    }
+    //if has one child
+
+    if(hasLeftChild(curr)){
+        // delete if root
+        if(parent == NULL){
+        temp = curr->left;
+        free(curr);
+        return temp;
+    }
+    // if its to the left of parent
+    if(strcmp(curr->name,parent->name) < 0){
+        parent->left = curr->left;
+        free(curr);
+    } // if its to the right of parent
+    else{
+        parent->right = curr->left;
+        free(curr);
+        }
+    return root;
+    }
+
+    if(hasRightChild(curr)){
+        // delete if root
+        if(parent == NULL){
+        temp = curr->right;
+        free(curr);
+        return temp;
+    }
+    // if its to the left of parent
+    if(strcmp(curr->name,parent->name) < 0){
+        parent->left = curr->right;
+        free(curr);
+    } // if its to the right of parent
+    else{
+        parent->right = curr->right;
+        free(curr);
+        }
+    return root;
+    }
     
+    // case where it has two childs
+    Node * toBeDeleted = findMax(curr->left);
+    temp = toBeDeleted;
+    char tempName[MAX_LEN];
+    strcpy(tempName,toBeDeleted->name);
+    int tmpFine = toBeDeleted->fine;
+
+    delete(root,toBeDeleted);
+    
+    // reassign temp values to curr
+    strcpy(curr->name,tempName);
+    curr->fine = tmpFine;
+
+    return root;
 }
+    
 
 // search for a node with a given name
 Node * search(Node * root, char * name, int *depth){
@@ -295,6 +380,6 @@ int main(){
         
     }
 
-    printInOrder(mainRoot);
-    free(mainRoot);
+    //printInOrder(mainRoot);
+    freeTree(mainRoot);
 }
