@@ -1,0 +1,16 @@
+15
+deduct a 10
+calc_below happy
+height_balance
+average
+search a
+add a 10
+deduct a 10
+search a
+add a 10
+add b 10
+add c 10
+add d 10
+add e 10
+add f 10
+deduct a 10

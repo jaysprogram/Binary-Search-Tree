@@ -119,7 +119,7 @@ int hasRightChild(Node * target){
     return 0;
 }
 
-Node * delete(Node * root,Node * curr){
+Node * deleteNode(Node * root,Node * curr){
     Node * temp;
     Node * parent = findParent(root,curr);
 
@@ -187,11 +187,12 @@ Node * delete(Node * root,Node * curr){
     strcpy(tempName,toBeDeleted->name);
     int tmpFine = toBeDeleted->fine;
 
-    delete(root,toBeDeleted);
+    root = deleteNode(root,toBeDeleted);
     
     // reassign temp values to curr
     strcpy(curr->name,tempName);
     curr->fine = tmpFine;
+
 
     return root;
 }
@@ -218,7 +219,6 @@ Node * search(Node * root, char * name, int *depth){
         return search(root->left, name, depth);
     }
     
-    
     // if not found
     return NULL;
 }
@@ -238,6 +238,7 @@ void sumAndCount(Node * root,int * sum, int * amount){
 }
 
 double average(Node * root){
+    if(root == NULL) return 0;
     int sum = 0;
     int amount = 0;
 
@@ -297,7 +298,7 @@ void freeTree(Node * root){
 int main(){
     // init empty tree
     Node * mainRoot = NULL;
-    int depth = 0;
+    int depth;
    
     // amount to process
     int qeuries;
@@ -336,7 +337,7 @@ int main(){
 
                 }
                 else{ //delete node since its negative
-                    mainRoot = delete(mainRoot,targetNode);
+                    mainRoot = deleteNode(mainRoot,targetNode);
                     printf("%s removed\n", name);
                 }
                 
@@ -353,9 +354,12 @@ int main(){
                 
             } else if(strcmp(command, "average") == 0){
 
-                printf("%0.2f\n", average(mainRoot));
+                printf("%.2f\n", average(mainRoot));
                 
             } else if(strcmp(command, "height_balance") == 0){
+                if(mainRoot == NULL){
+                    printf("left height = %d right height = %d not balanced\n", -1, -1);
+                }else{
                 int heightLeft = calcHeight(mainRoot->left);
                 int heightRight = calcHeight(mainRoot->right);
                 // print heights
@@ -366,7 +370,7 @@ int main(){
                 else{
                     printf("not balanced\n");
                 }
-                
+                }
                 
             } else { // print total for everything that is less than name: command calc_below
                 scanf("%s", name);
